@@ -11,27 +11,41 @@ class CPU:
         self.pc = 0
         self.register = [0] * 8
         self.running = True
+        self.reg = [0] * 8
 
     def load(self):
         """Load a program into memory."""
 
+        filename = sys.argv[1]
+
         address = 0
+
+        with open(filename) as f:
+            for address, line in enumerate(f):
+                line = line.split('#')
+
+                try:
+                    v = int(line[0], 2)
+                except value
+                    continue
+                self.ram[address] = v
+                address += 1
 
         # For now, we've just hardcoded a program:
 
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010, # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111, # PRN R0
+        #     0b00000000,
+        #     0b00000001, # HLT
+        # ]
 
-        for instruction in program:
-            self.ram[address] = instruction
-            address += 1
+        # for instruction in program:
+        #     self.ram[address] = instruction
+        #     address += 1
 
 
     def alu(self, op, reg_a, reg_b):
@@ -40,6 +54,8 @@ class CPU:
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         #elif op == "SUB": etc
+        elif op = 'MUL':
+            self.reg[reg_a] *= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -96,3 +112,9 @@ class CPU:
                 value = self.register[address]
                 print(value)
                 self.pc += 2
+            elif IR == prog['MUL']:
+                self.alu('MUL', operandA, operandB)
+                self.pc +=3
+            else:
+                print(f"Can't find {IR} with index of {self.pc}")
+                sys.exit(1)
