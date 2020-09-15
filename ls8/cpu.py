@@ -2,6 +2,8 @@
 
 import sys
 
+filename = sys.argv[1]
+
 class CPU:
     """Main CPU class."""
 
@@ -13,10 +15,8 @@ class CPU:
         self.running = True
         self.reg = [0] * 8
 
-    def load(self):
+    def load(self, filename):
         """Load a program into memory."""
-
-        filename = sys.argv[1]
 
         address = 0
 
@@ -26,7 +26,7 @@ class CPU:
 
                 try:
                     v = int(line[0], 2)
-                except value
+                except ValueError:
                     continue
                 self.ram[address] = v
                 address += 1
@@ -52,10 +52,10 @@ class CPU:
         """ALU operations."""
 
         if op == "ADD":
-            self.reg[reg_a] += self.reg[reg_b]
+            self.register[reg_a] += self.register[reg_b]
         #elif op == "SUB": etc
-        elif op = 'MUL':
-            self.reg[reg_a] *= self.reg[reg_b]
+        elif op == 'MUL':
+            self.register[reg_a] *= self.register[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -95,7 +95,7 @@ class CPU:
             'MUL': 0b10100010
         }
         while self.running:
-            IR = self.ram_read(self.pc)
+            IR = self.ram[self.pc]
             operandA = self.ram_read(self.pc + 1)
             operandB = self.ram_read(self.pc + 2)
 
