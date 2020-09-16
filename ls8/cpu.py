@@ -9,17 +9,21 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.ram = [0] * 256
-        self.pc = 0
-        self.register = [0] * 8
+        self.ram = [0] * 256 #memory
+        self.pc = 0 #program counter, address of the currently-executing instruction
+        self.register = [0] * 8 # R0-R7
         self.running = True
         self.reg = [0] * 8,
         self.SP = 0xf4
 
     def load(self, filename):
         """Load a program into memory."""
+        #get file path
+        #split input file per line
+        #turn into program instructions (str -> int)
+        #specify base
 
-        address = 0
+        address = 0 #index into memory / address of currently-executing instruction
 
         with open(filename) as f:
             for address, line in enumerate(f):
@@ -29,6 +33,7 @@ class CPU:
                     v = int(line[0], 2)
                 except ValueError:
                     continue
+
                 self.ram[address] = v
                 address += 1
 
@@ -88,6 +93,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
+        # create program dicti
         prog = {
             'LDI': 0b10000010,
             'PRN': 0b01000111,
@@ -98,42 +104,44 @@ class CPU:
             'POP': 0b01000110
         }
         while self.running:
-            IR = self.ram[self.pc]
+            IR = self.ram[self.pc] # Instruction register, copy of the currently-executed instruction
             operandA = self.ram_read(self.pc + 1)
             operandB = self.ram_read(self.pc + 2)
 
-            if IR == prog['HLT']:
+            if IR == prog['HLT']: #instruct to HLT
                 self.running = False
 
-            elif IR == prog['LDI']:
+            elif IR == prog['LDI']: #instruct to save
                 address = operandA
                 value = operandB
                 self.register[address] = value
                 self.pc += 3
-            elif IR == prog['PRN']:
+
+            elif IR == prog['PRN']: #instruct to print
                 address = operandA
                 value = self.register[address]
                 print(value)
                 self.pc += 2
-            elif IR == prog['MUL']:
+
+            elif IR == prog['MUL']: #instruct to multiply
                 self.alu('MUL', operandA, operandB)
                 self.pc +=3
-            elif IR == prog['PUSH']:
 
+            elif IR == prog['PUSH']: #instruct value in the register into RAM and save the value to the stack
                 address = operandA
                 value = self.register[address]
                 self.SP -= 1
                 self.ram[self.SP] = value
                 self.pc += 2
 
-            elif IR == prog['POP']:
+            elif IR == prog['POP']: #instruct to retrieve the value from RAM and add to register
                 address = operandA
                 value = self.ram[self.SP]
                 self.register[address] = value
 
                 self.SP += 1
                 self.pc += 2
-                
+
             else:
                 print(f"Can't find {IR} with index of {self.pc}")
                 sys.exit(1)
