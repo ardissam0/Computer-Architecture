@@ -13,7 +13,6 @@ class CPU:
         self.pc = 0 #program counter, address of the currently-executing instruction
         self.register = [0] * 8 # R0-R7
         self.running = True
-        self.reg = [0] * 8,
         self.SP = 0xf4
 
         # create branch_table to handle functions to index into
